@@ -5,13 +5,7 @@ pipeline {
         DOCKER_IMAGE = "sreevathsa221/app.py"
     }
 
-    stages {
-
-        stage('Clone Repository') {
-            steps {
-                git 'https://github.com/Sreevathsa67/deq.git'
-            }
-        }
+ 
 
         stage('Build Docker Image') {
             steps {
