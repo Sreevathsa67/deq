@@ -4,38 +4,29 @@ pipeline {
     environment {
         DOCKER_IMAGE = "sreevathsa221/app.py"
     }
-stage('Clone Repository') {
-    steps {
-        git branch: 'main', url: ' https://github.com/Sreevathsa67/deq.git'
-    }
-}
- 
 
- 
+    stages {
+        stage('Clone Repository') {
+            steps {
+                // Fixed the extra space in the URL
+                git branch: 'main', url: 'https://github.com/Sreevathsa67/deq.git'
+            }
+        }
 
         stage('Build Docker Image') {
             steps {
                 script {
+                    // This requires the 'Docker Pipeline' plugin to be installed in Jenkins
                     docker.build("${DOCKER_IMAGE}:latest")
                 }
             }
         }
 
-        stage('Login to Docker Hub') {
-            steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-creds',
-                    usernameVariable: 'DOCKER_USER',
-                    passwordVariable: 'DOCKER_PASS'
-                )]) {
-                    sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
-                }
-            }
-        }
-
-        stage('Push Docker Image') {
+        stage('Login and Push') {
             steps {
                 script {
+                    // Combining login and push into one clean block
+                    // docker.withRegistry handles authentication automatically
                     docker.withRegistry('', 'dockerhub-creds') {
                         docker.image("${DOCKER_IMAGE}:latest").push()
                     }
