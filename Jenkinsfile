@@ -4,9 +4,13 @@ pipeline {
     environment {
         DOCKER_IMAGE = "sreevathsa221/app.py"
     }
+stage('Clone Repository') {
+    steps {
+        git branch: 'main', url: ' https://github.com/Sreevathsa67/deq.git'
+    }
+}
+ 
 
- 
- 
  
 
         stage('Build Docker Image') {
